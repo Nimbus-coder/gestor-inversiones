@@ -31,11 +31,31 @@ with st.sidebar:
         st.rerun()
         
     st.divider()
+    st.header("🗑️ Gestion de Salida")
 
-if st.button("🗑️ Borrar Todo"):
-    if 'portfolio' in st.session_state:
+    if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
+
+        lista_tickers = [item['Ticker'] for item in st.session_state['portfolio']]
+        seleccionados = st.multiselect("Selecciona para quitar:", lista_tickers)
+        
+        if st.button("Eliminar Seleccionados"):
+            if seleccionados:
+                st.session_state['portfolio'] = [
+                    item for item in  st.session_state['portfolio']
+                    if item['Ticker'] not in seleccionados
+                ]
+                st.return()
+
+    st.write("")
+
+    if st.button("💣 Resetear Todo"):
         del st.session_state['portfolio']
-    st.rerun()
+        st.rerun()
+
+else: 
+    st.info("La Cartera está Vacía.")
+        
+    st.divider()
     
 
 # --- PANTALLA PRINCIPAL ---
@@ -116,6 +136,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
