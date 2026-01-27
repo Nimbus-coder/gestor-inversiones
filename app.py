@@ -102,6 +102,8 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
         "Precio Hoy": "${:,.2f}",
         "Ganancia ($)": "${:,.2f}",
         "Rendimiento (%)": "${:.2f}%",
+        "Valor Hoy": "${:,.2f}",
+        "Invertido": "${:,.2f}",
     }
         
     # Mostramos la tabla con colores automáticos en la columna de Rendimiento
@@ -114,6 +116,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
