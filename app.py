@@ -52,8 +52,8 @@ with st.sidebar:
         del st.session_state['portfolio']
         st.rerun()
 
-    else: 
-    st.info("La Cartera está Vacía.")
+        else: 
+            st.info("La Cartera está Vacía.")
         
     st.divider()
     
@@ -136,6 +136,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
