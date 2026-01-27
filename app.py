@@ -1,9 +1,3 @@
-# 1. INSTALAMOS LA LIBRERÍA VISUAL
-!pip install -q streamlit
-
-# 2. CREAMOS EL ARCHIVO "app.py" (Acá adentro va tu lógica)
-# %%writefile es un comando mágico que guarda lo de abajo en un archivo
-%%writefile app.py
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -102,4 +96,5 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     st.bar_chart(df.set_index("Ticker")["Valor Hoy ($)"])
 
 else:
+
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
