@@ -28,7 +28,7 @@ with st.sidebar:
         }
         st.session_state['portfolio'].append(nueva_posicion)
         st.success(f"✅ {ticker} Agregado!")
-        st.rerurn()
+        st.rerun()
         
 st.divider()
 
@@ -107,6 +107,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
