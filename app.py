@@ -30,7 +30,7 @@ with st.sidebar:
         st.success(f"✅ {ticker} Agregado!")
         st.rerun()
         
-st.divider()
+    st.divider()
 
 if st.button("🗑️ Borrar Todo"):
     if 'portfolio' in st.session_state:
@@ -100,8 +100,8 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 
     mis_reglas = {
         "Precio Hoy": "${:,.2f}",
-        "Ganancia ($)": "${:,.2f)",
-        "Rendimiento (%)": "$(:,.2f9",
+        "Ganancia ($)": "${:,.2f}",
+        "Rendimiento (%)": "${:.2f}%",
     }
         
     # Mostramos la tabla con colores automáticos en la columna de Rendimiento
@@ -114,6 +114,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
