@@ -18,6 +18,11 @@ with st.sidebar:
     
     if st.button("Agregar a Cartera"):
         # Guardamos en la "memoria" de la sesión (Session State)
+        st.divider()
+        
+        if st.button("🗑️Borrar Portafolio"):
+            st.session_state['portafolio'] = []
+            st.return()
         if 'portfolio' not in st.session_state:
             st.session_state['portfolio'] = []
             
@@ -98,3 +103,4 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
