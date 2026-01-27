@@ -34,8 +34,8 @@ st.divider()
 
 if st.button("🗑️ Borrar Todo"):
     if 'portfolio' in st.session_state:
-            del.st.session_state['portfolio']
-    st.return()
+        del st.session_state['portfolio']
+    st.rerun()
     
 
 # --- PANTALLA PRINCIPAL ---
@@ -107,6 +107,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
