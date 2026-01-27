@@ -97,8 +97,15 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 
     # --- TABLA Y GRÁFICOS ---
     st.subheader("📊 Detalle de Activos")
+
+    mis_reglas = {
+        "Precio Hoy": "${:,.2f}",
+        "Ganancia ($)": "${:,.2f)",
+        "Rendimiento (%)": "$(:,.2f9",
+    }
+        
     # Mostramos la tabla con colores automáticos en la columna de Rendimiento
-    st.dataframe(df.style.highlight_max(axis=0), use_container_width=True)
+    st.dataframe(df.style.format(mis_reglas), use_container_width=True)
     
     # Gráfico
     st.subheader("Distribución de Cartera")
@@ -107,6 +114,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
