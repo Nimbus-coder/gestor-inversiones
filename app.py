@@ -7,7 +7,7 @@ st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
 
 # Título y Diseño
 st.title("🚀 Mi Gestor de Inversiones")
-st.markdown("Controlá tus acciones argentinas (.BA) y CEDEARs en tiempo real.")
+st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
 
 # --- BARRA LATERAL (Donde cargamos datos) ---
 with st.sidebar:
@@ -113,8 +113,88 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     with tab_bonos:
         st.header("Gestión de Renta Fija")
         st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
+        st.subheader("📥 Cargar mis Bonos/ONs")
+    
+    col_b1, col_b2, col_b3 = st.columns(3)
+    with col_b1:
+        ticker_b = st.text_input("Ticker del Bono (ej: AL30D.BA)", value="AL30D.BA").upper()
+    with col_b2:
+        nominales = st.number_input("Cantidad de Nominales", min_value=1, value=1000)
+    with col_b3:
+        precio_pago = st.number_input("Precio pagado (USD)", min_value=0.0, value=58.0)
+
+    if st.button("Analizar Bono"):
+        # 2. Buscamos precio en vivo para comparar
+        data_b = yf.Ticker(ticker_b)
+        precio_actual_b = data_b.history(period="1d")['Close'].iloc[0]
+        
+        # 3. Cálculo de métricas básicas
+        paridad = (precio_actual_b / 100) * 100 # Los bonos valen 100 al final
+        st.metric("Precio Actual", f"USD {precio_actual_b:.2f}", delta=f"{precio_actual_b - precio_pago:.2f}")
+
+    # Definimos el cronograma (esto después lo haremos dinámico)
+        cronograma = [
+            {"fecha": "2026-07-09", "monto": 8.0}, # paga 8 dólares cada 100 nominales
+            {"fecha": "2027-01-09", "monto": 8.0},
+            {"fecha": "2027-07-09", "monto": 8.0},
+        ]
+
+        st.write("### 💰 Tus próximos cobros estimados")
+        cobros_reales = []
+        total_a_cobrar = 0
+
+        for c in cronograma:
+            # Lógica: (Nominales / 100) * monto del cupón
+            mi_cobro = (nominales / 100) * c["monto"]
+            cobros_reales.append({
+                "Fecha": c["fecha"],
+                "Monto a recibir (USD)": mi_cobro
+            })
+            total_a_cobrar += mi_cobro
+
+        st.table(pd.DataFrame(cobros_reales))
+        st.info(f"💵 En total, vas a recibir **USD {total_actual_cobrar:.2f}** hasta el vencimiento.")
     
     # Aquí es donde empezaremos a construir la lógica de bonos
+    # Defininimos el activo y sus pagos futuros
+    ticket_bono = "AL30"
+    precio_bono_usd = 58.50 # Esto después lo buscaremos con yfinance (AL30D.BA)
+    
+    # Lista de cupones (Fecha, Monto de interés, Monto de amortización)
+    # Valores aproximados para el ejemplo
+    cronograma = [
+        {"fecha": "2026-07-09", "interes": 0.25, "amort": 4.0},
+        {"fecha": "2027-01-09", "interes": 0.25, "amort": 4.0},
+        {"fecha": "2027-07-09", "interes": 0.25, "amort": 4.0},
+    ]
+
+    st.subheader(f"Análisis de Flujo de Fondos: {ticket_bono}")
+
+    from datetime import datetime
+
+    hoy = datetime.now()
+    proximos_pagos = []
+
+    for pago in cronograma:
+        fecha_dt = datetime.strptime(pago["fecha"], "%Y-%m-%d")
+        if fecha_dt > hoy:
+            dias_faltantes = (fecha_dt - hoy).days
+            proximos_pagos.append({
+                "Fecha": pago["fecha"],
+                "Cobro Total": pago["interes"] + pago["amort"],
+                "Días Faltantes": dias_faltantes
+            })
+
+    if proximos_pagos:
+        df_bono = pd.DataFrame(proximos_pagos)
+        
+        # Mostramos un cartel destacado con el pago más cercano
+        next_p = proximos_pagos[0]
+        st.info(f"💰 El próximo cobro es en **{next_p['Días Faltantes']} días** ({next_p['Fecha']})")
+        
+        # Tabla de Cashflow
+        st.write("### 📅 Cronograma de Cobros")
+        st.table(df_bono)
 
     # CREAMOS LA TABLA DE PANDAS
     df = pd.DataFrame(lista_resultados)
@@ -149,6 +229,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
