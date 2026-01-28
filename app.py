@@ -114,8 +114,8 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
         st.header("Gestión de Renta Fija")
         st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
         st.subheader("📥 Cargar mis Bonos/ONs")
-        with tab_bonos:
-    st.header("🏦 Panel de Renta Fija")
+    with tab_bonos:
+        st.header("🏦 Panel de Renta Fija")
 
     # Formulario de carga exclusivo para Bonos
     with st.expander("➕ Cargar Nuevo Bono / ON"):
@@ -275,6 +275,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
