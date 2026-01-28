@@ -12,9 +12,32 @@ st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
 # --- BARRA LATERAL (Donde cargamos datos) ---
 with st.sidebar:
     st.header("📥 Cargar Operación")
+    
+    tipo_activo = st.radio("Seleccionar tipo:", ["Acciones/CEDEARs", "Bonos/ONs"])
+    st.divider()
+
+    if tipo_activo == "Acciones/CEDEARs":
     ticker = st.text_input("Ticker (ej: GGAL.BA)", value="GGAL.BA").upper()
     cantidad = st.number_input("Cantidad", min_value=1, value=10)
     precio_compra = st.number_input("Precio de Compra (ARS)", min_value=0.0, value=1000.0)
+
+    else:
+        t_bono = st.text_input("Ticker del Bono (ej: AL30D)").upper()
+        vn_bono = st.number_input("Valor Nominal (V.N.)", min_value=1, value=1000)
+        p_bono = st.number_input("Precio de Compra USD", min_value=0.0, value=50.0)
+
+        if st.button("Guardar Bono"):
+            if 'portfolio_bono' not in st.session_state:
+                st.session_state['portfolio_bonos'] = []
+                
+            st.session_state['portfolio_bonos'].append({
+                "Ticker": t_bono,
+                "VN": vn_bono,
+                "Precio": p_bono,
+            })
+            st.succes(f"Bono {t_bono} guardado!")
+            st.rerun()
+                
     
     if st.button("Agregar a Cartera"):
         # Guardamos en la "memoria" de la sesión (Session State)
@@ -275,6 +298,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
