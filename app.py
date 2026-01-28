@@ -58,7 +58,7 @@ with st.sidebar:
         vn_bono = st.number_input("Valor Nominal(VN)", min_value=1, value=1000)
         p_bono = st.number_input("Precio de compra USD", min_value=0.0, value=50.0)
 
-        if st.button("Guardar Bono")
+        if st.button("Guardar Bono"):
             if 'portfolio_bonos' not in st.session_state:
                 st.session_state['portfolio_bonos'] = []
 
@@ -316,6 +316,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
