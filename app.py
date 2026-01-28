@@ -102,6 +102,22 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
         except Exception as e:
             st.error(f"Error con {item['Ticker']}: {e}")
 
+    # --- CREACIÓN DE PESTAÑAS ---
+tab_acciones, tab_bonos = st.tabs(["📈 Acciones y CEDEARs", "🏦 Renta Fija (Bonos/ONs)"])
+
+# --- CONTENIDO DE LA PESTAÑA 1 (Todo lo que ya tenías) ---
+with tab_acciones:
+    # ACÁ VA TODO TU CÓDIGO ACTUAL
+    # (Desde el "if 'portfolio' in st.session_state" hasta el final del gráfico)
+    st.write("Tu panel de acciones actual") # Esto es solo un placeholder
+
+# --- CONTENIDO DE LA PESTAÑA 2 (Lo nuevo) ---
+with tab_bonos:
+    st.header("Gestión de Renta Fija")
+    st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
+    
+    # Aquí es donde empezaremos a construir la lógica de bonos
+
     # CREAMOS LA TABLA DE PANDAS
     df = pd.DataFrame(lista_resultados)
     
@@ -136,6 +152,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
