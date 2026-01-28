@@ -17,9 +17,9 @@ with st.sidebar:
     st.divider()
 
     if tipo_activo == "Acciones/CEDEARs":
-    ticker = st.text_input("Ticker (ej: GGAL.BA)", value="GGAL.BA").upper()
-    cantidad = st.number_input("Cantidad", min_value=1, value=10)
-    precio_compra = st.number_input("Precio de Compra (ARS)", min_value=0.0, value=1000.0)
+        ticker = st.text_input("Ticker (ej: GGAL.BA)", value="GGAL.BA").upper()
+        cantidad = st.number_input("Cantidad", min_value=1, value=10)
+        precio_compra = st.number_input("Precio de Compra (ARS)", min_value=0.0, value=1000.0)
 
     else:
         t_bono = st.text_input("Ticker del Bono (ej: AL30D)").upper()
@@ -298,6 +298,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
