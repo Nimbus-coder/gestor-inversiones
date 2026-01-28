@@ -106,12 +106,12 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 tab_acciones, tab_bonos = st.tabs(["📈 Acciones y CEDEARs", "🏦 Renta Fija (Bonos/ONs)"])
 
 # --- CONTENIDO DE LA PESTAÑA 1 (Todo lo que ya tenías) ---
-with tab_acciones:
+    with tab_acciones:
  
     st.write("Tu panel de acciones actual") # Esto es solo un placeholder
 
 # --- CONTENIDO DE LA PESTAÑA 2 (Lo nuevo) ---
-with tab_bonos:
+    with tab_bonos:
     st.header("Gestión de Renta Fija")
     st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
     
@@ -147,8 +147,10 @@ with tab_bonos:
     # Gráfico
     st.subheader("Distribución de Cartera")
     st.bar_chart(df.set_index("Ticker")["Valor Hoy ($)"])
+    
 else:
-            st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+    st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
