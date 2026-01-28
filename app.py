@@ -114,6 +114,52 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
         st.header("Gestión de Renta Fija")
         st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
         st.subheader("📥 Cargar mis Bonos/ONs")
+        with tab_bonos:
+    st.header("🏦 Panel de Renta Fija")
+
+    # Formulario de carga exclusivo para Bonos
+    with st.expander("➕ Cargar Nuevo Bono / ON"):
+        col_b1, col_b2, col_b3 = st.columns(3)
+        with col_b1:
+            t_bono = st.text_input("Ticker (ej: AL30D.BA)").upper()
+        with col_b2:
+            nominales = st.number_input("Valor Nominal (V.N.)", min_value=1, value=1000)
+        with col_b3:
+            p_compra = st.number_input("Precio de Compra USD", min_value=0.0, value=50.0)
+        
+        if st.button("Guardar Bono"):
+            if 'portfolio_bonos' not in st.session_state:
+                st.session_state['portfolio_bonos'] = []
+            
+            # Guardamos los datos en una caja distinta a la de acciones
+            st.session_state['portfolio_bonos'].append({
+                "Ticker": t_bono,
+                "Nominales": nominales,
+                "Precio Compra": p_compra
+            })
+            st.success(f"Bono {t_bono} guardado!")
+            st.rerun()
+
+    # Mostramos los bonos si existen
+    if 'portfolio_bonos' in st.session_state and len(st.session_state['portfolio_bonos']) > 0:
+        st.subheader("Mis Tenencias en Renta Fija")
+        
+        for bono in st.session_state['portfolio_bonos']:
+            with st.container():
+                # Buscamos precio real para calcular métricas
+                data = yf.Ticker(bono['Ticker'])
+                precio_hoy = data.history(period="1d")['Close'].iloc[0]
+                
+                # Diseño de ficha de bono
+                c1, c2, c3 = st.columns(3)
+                c1.metric(bono['Ticker'], f"USD {precio_hoy:.2f}")
+                c2.write(f"**V.N.:** {bono['Nominales']}")
+                c3.write(f"**Paridad:** {(precio_hoy/100)*100:.1f}%")
+                
+                # Acá es donde pondremos el Cashflow que hicimos antes
+                st.divider()
+    else:
+        st.info("Aún no cargaste bonos en esta sección.")
     
     col_b1, col_b2, col_b3 = st.columns(3)
     with col_b1:
@@ -229,6 +275,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
