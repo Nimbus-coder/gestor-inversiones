@@ -107,7 +107,6 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
 
     # --- CONTENIDO DE LA PESTAÑA 1 (Todo lo que ya tenías) ---
     with tab_acciones:
- 
     st.write("Tu panel de acciones actual") # Esto es solo un placeholder
 
     # --- CONTENIDO DE LA PESTAÑA 2 (Lo nuevo) ---
@@ -150,6 +149,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
