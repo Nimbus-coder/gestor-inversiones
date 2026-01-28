@@ -107,8 +107,7 @@ tab_acciones, tab_bonos = st.tabs(["📈 Acciones y CEDEARs", "🏦 Renta Fija (
 
 # --- CONTENIDO DE LA PESTAÑA 1 (Todo lo que ya tenías) ---
 with tab_acciones:
-    # ACÁ VA TODO TU CÓDIGO ACTUAL
-    # (Desde el "if 'portfolio' in st.session_state" hasta el final del gráfico)
+ 
     st.write("Tu panel de acciones actual") # Esto es solo un placeholder
 
 # --- CONTENIDO DE LA PESTAÑA 2 (Lo nuevo) ---
@@ -149,9 +148,10 @@ with tab_bonos:
     st.subheader("Distribución de Cartera")
     st.bar_chart(df.set_index("Ticker")["Valor Hoy ($)"])
 
-    else:
+else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
