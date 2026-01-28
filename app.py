@@ -149,9 +149,10 @@ with tab_bonos:
     st.subheader("Distribución de Cartera")
     st.bar_chart(df.set_index("Ticker")["Valor Hoy ($)"])
 
-else:
+                else:
 
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
