@@ -149,7 +149,8 @@ with tab_bonos:
     st.bar_chart(df.set_index("Ticker")["Valor Hoy ($)"])
 
     else:
-    st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+        st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
