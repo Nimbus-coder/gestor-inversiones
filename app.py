@@ -21,6 +21,20 @@ with st.sidebar:
         cantidad = st.number_input("Cantidad", min_value=1, value=10)
         precio_compra = st.number_input("Precio de Compra (ARS)", min_value=0.0, value=1000.0)
 
+        if st.button("Agregar a Cartera"):
+        # Guardamos en la "memoria" de la sesión (Session State)
+            if 'portfolio' not in st.session_state:
+            st.session_state['portfolio'] = []
+            
+        st.session_state['portfolio'].append ({
+            "Ticker": ticker,
+            "Cantidad": cantidad,
+            "Precio Compra": precio_compra
+        })
+        
+        st.success(f"✅ {ticker} Agregado!")
+        st.rerun()
+
     else:
         t_bono = st.text_input("Ticker del Bono (ej: AL30D)").upper()
         vn_bono = st.number_input("Valor Nominal (V.N.)", min_value=1, value=1000)
@@ -37,21 +51,7 @@ with st.sidebar:
             })
             st.succes(f"Bono {t_bono} guardado!")
             st.rerun()
-                
-    
-    if st.button("Agregar a Cartera"):
-        # Guardamos en la "memoria" de la sesión (Session State)
-        if 'portfolio' not in st.session_state:
-            st.session_state['portfolio'] = []
-            
-        nueva_posicion = {
-            "Ticker": ticker,
-            "Cantidad": cantidad,
-            "Precio Compra": precio_compra
-        }
-        st.session_state['portfolio'].append(nueva_posicion)
-        st.success(f"✅ {ticker} Agregado!")
-        st.rerun()
+   
 
     else:
         t_bono = st.text_input("Ticker del Bono (ej: AL30D)").upper()
@@ -151,35 +151,39 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
         st.write("Tu panel de acciones actual") # Esto es solo un placeholder
 
     # --- CONTENIDO DE LA PESTAÑA 2 (Lo nuevo) ---
-    with tab_bonos:
-        st.header("Gestión de Renta Fija")
-        st.info("Próximamente: Análisis de TIR, Cupones y Cashflow.")
-        st.subheader("📥 Cargar mis Bonos/ONs")
+   # --- CONTENIDO DE LA PESTAÑA 2 (Renta Fija) ---
     with tab_bonos:
         st.header("🏦 Panel de Renta Fija")
 
-    # Formulario de carga exclusivo para Bonos
-    with st.expander("➕ Cargar Nuevo Bono / ON"):
-        col_b1, col_b2, col_b3 = st.columns(3)
-        with col_b1:
-            t_bono = st.text_input("Ticker (ej: AL30D.BA)").upper()
-        with col_b2:
-            nominales = st.number_input("Valor Nominal (V.N.)", min_value=1, value=1000)
-        with col_b3:
-            p_compra = st.number_input("Precio de Compra USD", min_value=0.0, value=50.0)
-        
-        if st.button("Guardar Bono"):
-            if 'portfolio_bonos' not in st.session_state:
-                st.session_state['portfolio_bonos'] = []
+        # 1. Verificamos si existen datos en la lista de bonos
+        if 'portfolio_bonos' in st.session_state and len(st.session_state['portfolio_bonos']) > 0:
+            st.subheader("Mis Tenencias en Renta Fija")
             
-            # Guardamos los datos en una caja distinta a la de acciones
-            st.session_state['portfolio_bonos'].append({
-                "Ticker": t_bono,
-                "Nominales": nominales,
-                "Precio Compra": p_compra
-            })
-            st.success(f"Bono {t_bono} guardado!")
-            st.rerun()
+            # Recorremos cada bono guardado para mostrar su "ficha"
+            for bono in st.session_state['portfolio_bonos']:
+                with st.expander(f"Análisis: {bono['Ticker']}", expanded=True):
+                    try:
+                        # Buscamos precio real en USD (Yahoo Finance)
+                        data = yf.Ticker(bono['Ticker'])
+                        history = data.history(period="1d")
+                        precio_hoy = history['Close'].iloc[0]
+                        
+                        # Mostramos métricas principales
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("Precio Actual", f"USD {precio_hoy:.2f}")
+                        c2.write(f"**V.N.:** {bono['Nominales']}")
+                        
+                        # Calculamos la paridad (Precio / Valor Técnico, asumiendo 100 de lámina)
+                        paridad = (precio_hoy / 100) * 100
+                        c3.write(f"**Paridad:** {paridad:.1f}%")
+                        
+                        st.divider()
+                        
+                    except Exception as e:
+                        st.error(f"No se pudieron obtener datos para {bono['Ticker']}: {e}")
+        else:
+            # Mensaje si la lista está vacía
+            st.info("Aún no cargaste bonos. Hacelo desde la barra lateral seleccionando 'Bonos/ONs'.")
 
     # Mostramos los bonos si existen
     if 'portfolio_bonos' in st.session_state and len(st.session_state['portfolio_bonos']) > 0:
@@ -316,6 +320,7 @@ if 'portfolio' in st.session_state and len(st.session_state['portfolio']) > 0:
     
 else:
     st.info("👈 Cargá tu primera acción en el menú de la izquierda para empezar.")
+
 
 
 
