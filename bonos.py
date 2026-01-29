@@ -24,4 +24,9 @@ CALENDARIO_PAGOS = {
 
 def obtener_cashflow(ticker):
     """Retorna la lista de pagos para un ticker dado o una lista vacía si no existe."""
+
     return CALENDARIO_PAGOS.get(ticker, [])
+
+mep_hoy = dolares.get('mep', 1) # Si no hay MEP, usamos 1 para no romper la cuenta
+valor_pesos = p_base * mep_hoy
+st.write(f"💰 Valor estimado en pesos: **${valor_pesos:,.2f}**")
