@@ -12,6 +12,21 @@ st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
 st.title("🚀 Mi Gestor de Inversiones")
 st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
 
+# --- PANEL DE COTIZACIONES ---
+dolares = obtener_dolares()
+
+if dolares:
+    # Creamos 5 columnas para que entren todos los dólares
+    c1, c2, c3, c4, c5 = st.columns(5)
+    
+    # Mostramos cada uno con su precio de venta
+    c1.metric("Oficial", f"${dolares.get('oficial', 0):,.2f}")
+    c2.metric("MEP", f"${dolares.get('mep', 0):,.2f}")
+    c3.metric("CCL", f"${dolares.get('ccl', 0):,.2f}")
+    c4.metric("Blue", f"${dolares.get('blue', 0):,.2f}")
+    c5.metric("Tarjeta", f"${dolares.get('tarjeta', 0):,.2f}")
+    st.divider()
+
 def obtener_precio_rava(ticker_buscado):
     try:
         url = "https://www.rava.com/cotizaciones/bonos"
@@ -38,6 +53,18 @@ def obtener_precio_rava(ticker_buscado):
                             return precio_f
         return None
     except Exception as e:
+        return None
+
+def obtener_dolares():
+    try:
+        # Consultamos la API que ya nos da todos los tipos de cambio
+        response = requests.get("https://dolarapi.com/v1/dolares", timeout=10)
+        datos = response.json()
+        
+        # Transformamos la lista en un diccionario fácil de usar
+        precios = {d['casa']: d['venta'] for d in datos}
+        return precios
+    except:
         return None
 # --- BARRA LATERAL (Donde cargamos datos) ---
 # --- BARRA LATERAL (Carga de Datos) ---
@@ -144,6 +171,7 @@ if hay_acciones or hay_bonos:
             st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
