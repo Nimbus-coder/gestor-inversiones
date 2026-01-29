@@ -115,34 +115,36 @@ if hay_acciones or hay_bonos:
         if hay_bonos:
             for bono in st.session_state['portfolio_bonos']:
                 with st.expander(f"📌 {bono['Ticker']}", expanded=True):
-                # Usamos el precio que vos cargaste manualmente en la barra lateral
-                    p_base = bono['Precio'] 
-                
+                    # Usamos el precio que vos cargaste manualmente en la barra lateral
+                    p_base = bono['Precio Compra'] 
+                    
                     c1, c2, c3 = st.columns(3)
-                    c1.metric("Precio Ref. (USD)", f"$ {p_base:,.2f}")
-                    c2.metric("V.N. Poseído", bono['VN'])
+                    c1.metric("Precio Compra (USD)", f"$ {p_base:,.2f}")
+                    c2.metric("V.N. Poseído", bono['Nominales'])
                     c3.metric("Paridad Ref.", f"{(p_base/100)*100:.1f}%")
 
-                # --- El Cashflow que ya tenés en bonos.py ---
+                    # --- El Cashflow que ya tenés en bonos.py ---
                     cronograma = obtener_cashflow(bono['Ticker'])
-                if cronograma:
-                    st.write("---")
-                    st.write("📅 **Flujo de Fondos Proyectado (USD):**")
-                    
-                    pagos_v_n = []
-                    for p in cronograma:
-                        monto = (bono['VN'] / 100) * p['cupon']
-                        pagos_v_n.append({
-                            "Fecha": p['fecha'], 
-                            "Cobro Estimado (USD)": f"{monto:.2f}"
-                        })
-                    st.table(pagos_v_n)
-                else:
-                    st.warning("Cargá este ticker en bonos.py para ver los pagos.")
+                    if cronograma:
+                        st.write("---")
+                        st.write("📅 **Flujo de Fondos Proyectado (USD):**")
+                        
+                        pagos_v_n = []
+                        for p in cronograma:
+                            # Calculamos el cobro según tus nominales
+                            monto = (bono['Nominales'] / 100) * p['cupon']
+                            pagos_v_n.append({
+                                "Fecha": p['fecha'], 
+                                "Cobro Estimado (USD)": f"{monto:.2f}"
+                            })
+                        st.table(pagos_v_n)
+                    else:
+                        st.warning("Cargá este ticker en bonos.py para ver los pagos.")
         else:
-        st.info("Cargá un bono en la barra lateral para empezar.")
+            st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
