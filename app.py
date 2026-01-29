@@ -114,7 +114,7 @@ if hay_acciones or hay_bonos:
     with tab_bonos:
         if hay_bonos:
             for bono in st.session_state['portfolio_bonos']:
-            with st.expander(f"📌 {bono['Ticker']}", expanded=True):
+                with st.expander(f"📌 {bono['Ticker']}", expanded=True):
                 # Usamos el precio que vos cargaste manualmente en la barra lateral
                 p_base = bono['Precio'] 
                 
@@ -143,6 +143,7 @@ if hay_acciones or hay_bonos:
         st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
