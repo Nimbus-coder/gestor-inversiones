@@ -36,10 +36,12 @@ if dolares:
     
     # Mostramos cada uno con su precio de venta
     c1.metric("Oficial", f"${dolares.get('oficial', 0):,.2f}")
-    c2.metric("MEP", f"${dolares.get('mep', 0):,.2f}")
-    c3.metric("CCL", f"${dolares.get('ccl', 0):,.2f}")
+    c2.metric("MEP", f"${dolares.get('bolsa', 0):,.2f}")
+    c3.metric("CCL", f"${dolares.get('contadoconliqui', 0):,.2f}")
     c4.metric("Blue", f"${dolares.get('blue', 0):,.2f}")
     c5.metric("Tarjeta", f"${dolares.get('tarjeta', 0):,.2f}")
+    c6.metric("Cripto", f"${dolares.get('cripto',0):,.2f}")
+    c7.metric("Mayorista", f"${dolares.get('mayorista',0):,.2f}")
     st.divider()
 
 def obtener_precio_rava(ticker_buscado):
@@ -175,6 +177,7 @@ if hay_acciones or hay_bonos:
             st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
