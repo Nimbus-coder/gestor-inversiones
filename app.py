@@ -112,46 +112,38 @@ if hay_acciones or hay_bonos:
             st.info("No hay acciones cargadas.")
 
     with tab_bonos:
-        if hay_bonos:
-            for bono in st.session_state['portfolio_bonos']:
-                # Mantenemos tu diseño de expander
-                with st.expander(f"📌 {bono['Ticker']}", expanded=True):
-                    try:
-                        # --- 1. LLAMAMOS A RAVA EN LUGAR DE YAHOO ---
-                        p_hoy = obtener_precio_rava(bono['Ticker'])
-                        
-                        if p_hoy:
-                            c1, c2, c3 = st.columns(3)
-                            c1.metric("Precio Rava", f"$ {p_hoy:,.2f}")
-                            c2.metric("V.N.", bono['Nominales'])
-                            
-                            paridad = (p_hoy / 100) * 100
-                            c3.metric("Paridad", f"{paridad:.1f}%")
+    if hay_bonos:
+        for bono in st.session_state['portfolio_bonos']:
+            with st.expander(f"📌 {bono['Ticker']}", expanded=True):
+                # Usamos el precio que vos cargaste manualmente en la barra lateral
+                p_base = bono['Precio'] 
+                
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Precio Ref. (USD)", f"$ {p_base:,.2f}")
+                c2.metric("V.N. Poseído", bono['VN'])
+                c3.metric("Paridad Ref.", f"{(p_base/100)*100:.1f}%")
 
-                            # --- 2. LLAMAMOS AL CASHFLOW DE bonos.py ---
-                            cronograma = obtener_cashflow(bono['Ticker'])
-                            if cronograma:
-                                st.write("---")
-                                st.write("📅 **Próximos Cobros (USD):**")
-                                
-                                pagos_calculados = []
-                                for p in cronograma:
-                                    # Calculamos el cobro según tus nominales
-                                    monto = (bono['Nominales'] / 100) * p['cupon']
-                                    pagos_calculados.append({
-                                        "Fecha": p['fecha'], 
-                                        "Monto (USD)": f"{monto:.2f}"
-                                    })
-                                st.table(pagos_calculados)
-                        else:
-                            st.warning(f"No se encontró cotización para {bono['Ticker']} en Rava.")
-
-                    except Exception as e:
-                        st.error(f"Error procesando {bono['Ticker']}")
-        else:
-            st.info("No hay bonos cargados.")
+                # --- El Cashflow que ya tenés en bonos.py ---
+                cronograma = obtener_cashflow(bono['Ticker'])
+                if cronograma:
+                    st.write("---")
+                    st.write("📅 **Flujo de Fondos Proyectado (USD):**")
+                    
+                    pagos_v_n = []
+                    for p in cronograma:
+                        monto = (bono['VN'] / 100) * p['cupon']
+                        pagos_v_n.append({
+                            "Fecha": p['fecha'], 
+                            "Cobro Estimado (USD)": f"{monto:.2f}"
+                        })
+                    st.table(pagos_v_n)
+                else:
+                    st.warning("Cargá este ticker en bonos.py para ver los pagos.")
+    else:
+        st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
