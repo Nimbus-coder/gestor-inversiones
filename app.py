@@ -1,6 +1,9 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from bonos import obtener_cashflow
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
@@ -9,6 +12,15 @@ st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
 st.title("🚀 Mi Gestor de Inversiones")
 st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
 
+def obtener_precio_rava(ticker):
+    try:
+        url = f"https://www.rava.com/perfil/{ticker}"
+        response = requests.get(url, timeout=10)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        precio_texto = soup.find('div', {'class': 'ultimo'}).text
+        return float(precio_texto.replace('.', '').replace(',', '.'))
+    except:
+        return None
 # --- BARRA LATERAL (Donde cargamos datos) ---
 # --- BARRA LATERAL (Carga de Datos) ---
 with st.sidebar:
@@ -84,19 +96,45 @@ if hay_acciones or hay_bonos:
     with tab_bonos:
         if hay_bonos:
             for bono in st.session_state['portfolio_bonos']:
+                # Mantenemos tu diseño de expander
                 with st.expander(f"📌 {bono['Ticker']}", expanded=True):
                     try:
-                        data = yf.Ticker(bono['Ticker'])
-                        p_hoy = data.history(period="1d")['Close'].iloc[0]
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("Precio Actual", f"USD {p_hoy:.2f}")
-                        c2.metric("V.N.", bono['Nominales'])
-                        c3.metric("Paridad", f"{(p_hoy/100)*100:.1f}%")
-                    except: st.error(f"Error con {bono['Ticker']}")
+                        # --- 1. LLAMAMOS A RAVA EN LUGAR DE YAHOO ---
+                        p_hoy = obtener_precio_rava(bono['Ticker'])
+                        
+                        if p_hoy:
+                            c1, c2, c3 = st.columns(3)
+                            c1.metric("Precio Rava", f"$ {p_hoy:,.2f}")
+                            c2.metric("V.N.", bono['Nominales'])
+                            
+                            paridad = (p_hoy / 100) * 100
+                            c3.metric("Paridad", f"{paridad:.1f}%")
+
+                            # --- 2. LLAMAMOS AL CASHFLOW DE bonos.py ---
+                            cronograma = obtener_cashflow(bono['Ticker'])
+                            if cronograma:
+                                st.write("---")
+                                st.write("📅 **Próximos Cobros (USD):**")
+                                
+                                pagos_calculados = []
+                                for p in cronograma:
+                                    # Calculamos el cobro según tus nominales
+                                    monto = (bono['Nominales'] / 100) * p['cupon']
+                                    pagos_calculados.append({
+                                        "Fecha": p['fecha'], 
+                                        "Monto (USD)": f"{monto:.2f}"
+                                    })
+                                st.table(pagos_calculados)
+                        else:
+                            st.warning(f"No se encontró cotización para {bono['Ticker']} en Rava.")
+
+                    except Exception as e:
+                        st.error(f"Error procesando {bono['Ticker']}")
         else:
             st.info("No hay bonos cargados.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
