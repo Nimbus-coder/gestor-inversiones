@@ -11,37 +11,42 @@ st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
 # Título y Diseño
 st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
 st.title("🚀 Mi Gestor de Inversiones")
-
+# --- 1. DEFINICIÓN DE LA FUNCIÓN (Una sola vez) ---
 def obtener_dolares():
     try:
-        # Consultamos la API que ya nos da todos los tipos de cambio
         response = requests.get("https://dolarapi.com/v1/dolares", timeout=10)
         datos = response.json()
-       
-        
-        # Transformamos la lista en un diccionario fácil de usar
-        return {d['casa']: d['venta'] for d in datos}
-        return precios
+        # Guardamos el objeto completo para tener precio y variación diaria
+        return {d['casa']: d for d in datos}
     except Exception as e:
-        st.error(f"Error al conectar  con la API de dólares: {e}") # Es mejor usar .error para que salga en rojo # O simplemente:
-        
+        st.error(f"⚠️ Error API Dólares: {e}")
         return None
 
-# --- PANEL DE COTIZACIONES ---
+# --- 2. USO DE LA FUNCIÓN ---
 dolares = obtener_dolares()
 
 if dolares:
-    # Creamos 5 columnas para que entren todos los dólares
-    c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
+    # Usamos 4 columnas para que en el celular se vea más grande y no se amontone
+    c1, c2, c3, c4 = st.columns(4)
+    c5, c6, c7, _ = st.columns(4)
     
-    # Mostramos cada uno con su precio de venta
-    c1.metric("Oficial", f"${dolares.get('oficial', 0):,.2f}")
-    c2.metric("MEP", f"${dolares.get('bolsa', 0):,.2f}")
-    c3.metric("CCL", f"${dolares.get('contadoconliqui', 0):,.2f}")
-    c4.metric("Blue", f"${dolares.get('blue', 0):,.2f}")
-    c5.metric("Tarjeta", f"${dolares.get('tarjeta', 0):,.2f}")
-    c6.metric("Cripto", f"${dolares.get('cripto',0):,.2f}")
-    c7.metric("Mayorista", f"${dolares.get('mayorista',0):,.2f}")
+    # Esta función interna te ahorra escribir 20 líneas de código
+    def m_dolar(col, titulo, casa):
+        info = dolares.get(casa, {})
+        v_actual = info.get('venta', 0)
+        v_diaria = info.get('variacion', 0)
+        # Delta muestra la flechita de variación porcentual
+        col.metric(titulo, f"${v_actual:,.2f}", delta=f"{v_diaria}%")
+
+    # Mapeo exacto según el JSON que vimos en tu pantalla
+    m_dolar(c1, "OFICIAL", "oficial")
+    m_dolar(c2, "MEP", "bolsa")
+    m_dolar(c3, "CCL", "contadoconliqui")
+    m_dolar(c4, "BLUE", "blue")
+    m_dolar(c5, "CRIPTO", "cripto")
+    m_dolar(c6, "MAYORISTA", "mayorista")
+    m_dolar(c7, "TARJETA", "tarjeta")
+    
     st.divider()
 
 def obtener_precio_rava(ticker_buscado):
@@ -177,6 +182,7 @@ if hay_acciones or hay_bonos:
             st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
