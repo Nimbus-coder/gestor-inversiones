@@ -20,25 +20,24 @@ def obtener_precio_rava(ticker_buscado):
         
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
-            # Buscamos todas las filas de la tabla
-            filas = soup.find_all('tr')
-            
+            # Rava pone los datos en un div con id 'cotizaciones' o una tabla
+            tabla = soup.find('table') 
+            if not tabla:
+                return None
+                
+            filas = tabla.find_all('tr')
             for fila in filas:
-                celdas = fila.find_all('td')
-                if len(celdas) > 0:
-                    # La primera celda suele ser el Ticker
-                    ticker_tabla = celdas[0].text.strip()
-                    
-                    if ticker_tabla == ticker_buscado:
-                        # La celda del precio suele ser la segunda o tercera (Cierre/Último)
-                        # En Rava es la columna 'Último'
-                        precio_raw = celdas[1].text.strip()
-                        # Limpieza: 1.200,50 -> 1200.50
-                        precio_f = float(precio_raw.replace('.', '').replace(',', '.'))
-                        return precio_f
+                celdas = [td.text.strip() for td in fila.find_all('td')]
+                
+                # Verificamos si el ticker está en la fila
+                if celdas and ticker_buscado == celdas[0]:
+                    # Buscamos el primer valor que parezca un número en las siguientes celdas
+                    for valor in celdas[1:5]: # Revisamos las primeras columnas de precios
+                        if valor and ',' in valor:
+                            precio_f = float(valor.replace('.', '').replace(',', '.'))
+                            return precio_f
         return None
     except Exception as e:
-        print(f"Error scraping Rava: {e}")
         return None
 # --- BARRA LATERAL (Donde cargamos datos) ---
 # --- BARRA LATERAL (Carga de Datos) ---
@@ -153,6 +152,7 @@ if hay_acciones or hay_bonos:
             st.info("No hay bonos cargados.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
