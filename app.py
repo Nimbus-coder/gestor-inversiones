@@ -17,6 +17,7 @@ def obtener_dolares():
         # Consultamos la API que ya nos da todos los tipos de cambio
         response = requests.get("https://dolarapi.com/v1/dolares", timeout=10)
         datos = response.json()
+        st.writen(datos)
         
         # Transformamos la lista en un diccionario fácil de usar
         return {d['casa']: d['venta'] for d in datos}
@@ -173,6 +174,7 @@ if hay_acciones or hay_bonos:
             st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
