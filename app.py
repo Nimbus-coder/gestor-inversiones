@@ -104,10 +104,10 @@ if hay_acciones or hay_bonos:
                     total_actual += val_actual
                 except: st.error(f"Error con {item['Ticker']}")
             
-            df_acc = pd.DataFrame(lista_resultados)
-            st.metric("Resultado Global", f"$ {total_actual:,.0f}", delta=f"${total_actual-total_invertido:,.0f}")
-            st.dataframe(df_acc, use_container_width=True)
-            st.bar_chart(df_acc.set_index("Ticker")["Valor Hoy ($)"])
+                df_acc = pd.DataFrame(lista_resultados)
+                st.metric("Resultado Global", f"$ {total_actual:,.0f}", delta=f"${total_actual-total_invertido:,.0f}")
+                st.dataframe(df_acc, use_container_width=True)
+                st.bar_chart(df_acc.set_index("Ticker")["Valor Hoy ($)"])
         else:
             st.info("No hay acciones cargadas.")
 
@@ -116,15 +116,15 @@ if hay_acciones or hay_bonos:
             for bono in st.session_state['portfolio_bonos']:
                 with st.expander(f"📌 {bono['Ticker']}", expanded=True):
                 # Usamos el precio que vos cargaste manualmente en la barra lateral
-                p_base = bono['Precio'] 
+                    p_base = bono['Precio'] 
                 
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Precio Ref. (USD)", f"$ {p_base:,.2f}")
-                c2.metric("V.N. Poseído", bono['VN'])
-                c3.metric("Paridad Ref.", f"{(p_base/100)*100:.1f}%")
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Precio Ref. (USD)", f"$ {p_base:,.2f}")
+                    c2.metric("V.N. Poseído", bono['VN'])
+                    c3.metric("Paridad Ref.", f"{(p_base/100)*100:.1f}%")
 
                 # --- El Cashflow que ya tenés en bonos.py ---
-                cronograma = obtener_cashflow(bono['Ticker'])
+                    cronograma = obtener_cashflow(bono['Ticker'])
                 if cronograma:
                     st.write("---")
                     st.write("📅 **Flujo de Fondos Proyectado (USD):**")
@@ -143,6 +143,7 @@ if hay_acciones or hay_bonos:
         st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
