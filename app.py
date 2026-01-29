@@ -9,8 +9,8 @@ from bonos import obtener_cashflow
 st.set_page_config(page_title="Mi Portfolio PRO", layout="wide")
 
 # Título y Diseño
-st.title("🚀 Mi Gestor de Inversiones")
 st.markdown("Controlá tus Acciones Argentinas (.BA) y CEDEARs en tiempo real.")
+st.title("🚀 Mi Gestor de Inversiones")
 
 # --- PANEL DE COTIZACIONES ---
 dolares = obtener_dolares()
@@ -26,6 +26,19 @@ if dolares:
     c4.metric("Blue", f"${dolares.get('blue', 0):,.2f}")
     c5.metric("Tarjeta", f"${dolares.get('tarjeta', 0):,.2f}")
     st.divider()
+
+def obtener_dolares():
+    try:
+        # Consultamos la API que ya nos da todos los tipos de cambio
+        response = requests.get("https://dolarapi.com/v1/dolares", timeout=10)
+        datos = response.json()
+        
+        # Transformamos la lista en un diccionario fácil de usar
+        return {d['casa']: d['venta'] for d in datos}
+        return precios
+    except Exception as e:
+        st.error(f"Error al conectar  con la API de dólares: {e}")
+        return None
 
 def obtener_precio_rava(ticker_buscado):
     try:
@@ -55,17 +68,6 @@ def obtener_precio_rava(ticker_buscado):
     except Exception as e:
         return None
 
-def obtener_dolares():
-    try:
-        # Consultamos la API que ya nos da todos los tipos de cambio
-        response = requests.get("https://dolarapi.com/v1/dolares", timeout=10)
-        datos = response.json()
-        
-        # Transformamos la lista en un diccionario fácil de usar
-        precios = {d['casa']: d['venta'] for d in datos}
-        return precios
-    except:
-        return None
 # --- BARRA LATERAL (Donde cargamos datos) ---
 # --- BARRA LATERAL (Carga de Datos) ---
 with st.sidebar:
@@ -171,6 +173,7 @@ if hay_acciones or hay_bonos:
             st.info("Cargá un bono en la barra lateral para empezar.")
 else:
     st.info("👈 Cargá tu primer activo en la barra lateral para empezar.")
+
 
 
 
